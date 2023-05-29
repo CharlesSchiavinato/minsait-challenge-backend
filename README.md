@@ -55,7 +55,7 @@ A documentação dos endpoints estão disponíveis na própria API [localhost:90
 - Teste de integração de componentes utilizando o conceito database in memory;
 - Teste de integração completo;
 
-10. Desenhos contendo o fluxo de funcionalidade dos enpoints da solução utlizando o Mermaid Markdown e disponibilizados na pasta .\docs.
+10. Desenhos contendo o fluxo de funcionalidade dos enpoints da solução utlizando o Mermaid Markdown e disponibilizados na pasta /docs.
 11. O projeto já contém um arquivo config.env com todas as configurações necessárias para poder executar a API no ambiente local.
 12. Docker-compose para poder subir os serviços de banco de dados e cache para poder rodas a API no ambiente local.
 13. Dockerfile para poder realizar o build da API e gerar imagem docker para rodar no ambiente local.
