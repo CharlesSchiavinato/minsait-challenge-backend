@@ -65,8 +65,7 @@ A documentação dos endpoints estão disponíveis na própria API [localhost:90
 
 ## Observação
 1. Faltou implementar um filtro de período de data na listagem de lançamentos
-2. Faltou implementar um filtro de período de data na consulta de saldo
-3. Apesar de não ter aplicado nesse projeto também tenho conhecimento do padrão conventional commits.
+2. Apesar de não ter aplicado nesse projeto também tenho conhecimento do padrão conventional commits.
 
 
 ## Geração da Documentação da API - Swagger
