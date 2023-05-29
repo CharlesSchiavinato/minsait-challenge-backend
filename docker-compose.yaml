@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: minsait-postgres
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: db_minsait
+      POSTGRES_USER: userminsait
+      POSTGRES_PASSWORD: Minsait@123
+    volumes:
+      - minsait-db-data:/var/lib/postgres/data
+    networks:
+      - minsait-network
+
+ # adminer:
+  #   container_name: minsait-adminer
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
+  #   networks:
+  #     - minsait-network
+
+  cache:
+    container_name: minsait-redis
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - minsait-network
+
+volumes:
+  minsait-db-data:
+
+networks:
+  minsait-network:

@@ -1,0 +1,341 @@
+basePath: /api
+definitions:
+  model.CashBalanceDaily:
+    properties:
+      reference_date:
+        description: Data de Referencia
+        example: "2019-08-24T00:00:00Z"
+        format: date-time
+        type: string
+      value:
+        description: Saldo
+        example: 1.23
+        format: float
+        type: number
+    required:
+    - reference_date
+    - value
+    type: object
+  model.CashLaunch:
+    properties:
+      created_at:
+        description: Data de Inclusão do Lançamento (Gerado automaticamente na inclusão)
+        example: "2019-08-24T16:59:59Z"
+        format: date-time
+        type: string
+      description:
+        description: Descrição do Lançamento
+        type: string
+      id:
+        description: Identificador do Lançamento (Gerado automaticamente na inclusão)
+        format: int64
+        minimum: 1
+        type: integer
+      reference_date:
+        description: Data de Referencia do Lançamento
+        example: "2019-08-24T00:00:00Z"
+        format: date-time
+        type: string
+      type:
+        description: Tipo do Lançamento (C=Crédito D=Débito)
+        enum:
+        - C
+        - D
+        type: string
+      updated_at:
+        description: Data da Última Alteração do Lançamento (Atualizado automaticamente
+          na inclusão e alteração)
+        example: "2019-08-24T16:59:59Z"
+        format: date-time
+        type: string
+      value:
+        description: Valor do Lançamento
+        example: 1.23
+        format: float
+        type: number
+    required:
+    - created_at
+    - description
+    - id
+    - reference_date
+    - type
+    - updated_at
+    - value
+    type: object
+  model.Error:
+    properties:
+      code:
+        description: Código do Erro
+        example: 400.1
+        format: float
+        type: number
+      message:
+        description: Descrição do Erro
+        example: error message
+        type: string
+    required:
+    - code
+    - message
+    type: object
+  model.parametersCashLaunchWrapper:
+    properties:
+      description:
+        description: Descrição do Lançamento
+        type: string
+      reference_date:
+        description: Data de Referencia do Lançamento
+        example: "2019-08-24T00:00:00Z"
+        format: date-time
+        type: string
+      type:
+        description: Tipo do Lançamento (C=Crédito D=Débito)
+        enum:
+        - C
+        - D
+        type: string
+      value:
+        description: Valor do Lançamento
+        example: 1.23
+        format: float
+        type: number
+    required:
+    - description
+    - reference_date
+    - type
+    - value
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:9000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Está API tem como objetivo registrar lançamentos de crédito/débito
+    e demonstrar o saldo diário.
+  title: API de Fluxo de Caixa
+  version: 1.0.0
+paths:
+  /cash/balance/daily:
+    get:
+      consumes:
+      - application/json
+      description: Retorna o Saldo Diário de todos os Lançamentos realizado no Período
+        informado. O período não pode ser superior a 31 dias.
+      parameters:
+      - description: Data de Referencia Inicial (AAAA-MM-DD)
+        example: '"2020-05-23"'
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: Data de Referencia Final (AAAA-MM-DD)
+        example: '"2020-05-23"'
+        in: query
+        name: to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.CashBalanceDaily'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Consultar por Período
+      tags:
+      - Saldo Diário
+  /cash/balance/daily/{date}:
+    get:
+      consumes:
+      - application/json
+      description: Retorna o Saldo de todos os Lançamentos realizado na Data Informada.
+        Se não for encontrado nenhum lançamento então será retornado com saldo zero.
+      parameters:
+      - description: Data de Referencia (AAAA-MM-DD)
+        example: '"2020-05-23"'
+        in: path
+        name: date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CashBalanceDaily'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Consultar
+      tags:
+      - Saldo Diário
+  /cash/launch:
+    get:
+      consumes:
+      - application/json
+      description: Retorna uma lista de Lançamentos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.CashLaunch'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Listar
+      tags:
+      - Lançamentos
+    post:
+      consumes:
+      - application/json
+      description: Adiciona Lançamento
+      parameters:
+      - description: Lançamento
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.parametersCashLaunchWrapper'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.CashLaunch'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Adicionar
+      tags:
+      - Lançamentos
+  /cash/launch/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Exclui um Lançamento
+      parameters:
+      - description: Id do Lançamento
+        example: '"1"'
+        in: path
+        name: param
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Excluir
+      tags:
+      - Lançamentos
+    get:
+      consumes:
+      - application/json
+      description: Retorna um Lançamento
+      parameters:
+      - description: Id do Lançamento
+        example: '"1"'
+        in: path
+        name: param
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CashLaunch'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Consultar
+      tags:
+      - Lançamentos
+    put:
+      consumes:
+      - application/json
+      description: Altera um Lançamento
+      parameters:
+      - description: Id do Lançamento
+        example: '"1"'
+        in: path
+        name: param
+        type: string
+      - description: Lançamento
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.parametersCashLaunchWrapper'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CashLaunch'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Alterar
+      tags:
+      - Lançamentos
+swagger: "2.0"
